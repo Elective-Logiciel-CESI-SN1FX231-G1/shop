@@ -6,3 +6,6 @@ publicUrl="http://localhost:8080/"
 
 [mongo]
 url="mongodb://localhost:27017/shop-development"
+
+[mqtt]
+url="mqtt://localhost/"
