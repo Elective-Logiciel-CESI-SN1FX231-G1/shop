@@ -1,11 +1,11 @@
 import { Handler } from 'express'
-import ArticleModel from '../models/ArticleModel'
+import ProductModel from '../models/ProductModel'
 
 export const create: Handler = async (req, res) => {
-  const article = new ArticleModel(req.body)
+  const Product = new ProductModel(req.body)
   try {
-    await article.save()
-    res.send(article)
+    await Product.save()
+    res.send(Product)
   } catch (err) {
     res.status(400).json(err)
   }
@@ -13,8 +13,8 @@ export const create: Handler = async (req, res) => {
 
 export const getAll: Handler = async (req, res) => {
   try {
-    const articles = await ArticleModel.find()
-    res.send(articles)
+    const Products = await ProductModel.find()
+    res.send(Products)
   } catch (err) {
     res.status(400).json(err)
   }
@@ -22,8 +22,8 @@ export const getAll: Handler = async (req, res) => {
 
 export const getOne: Handler = async (req, res) => {
   try {
-    const article = await ArticleModel.findOne({ _id: req.params.id })
-    res.send(article)
+    const Product = await ProductModel.findOne({ _id: req.params.id })
+    res.send(Product)
   } catch (err) {
     res.status(400).json(err)
   }
@@ -31,8 +31,8 @@ export const getOne: Handler = async (req, res) => {
 
 export const modify: Handler = async (req, res) => {
   try {
-    const article = await ArticleModel.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
-    res.send(article)
+    const Product = await ProductModel.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true })
+    res.send(Product)
   } catch (err) {
     res.status(400).json(err)
   }
@@ -40,8 +40,8 @@ export const modify: Handler = async (req, res) => {
 
 export const remove: Handler = async (req, res) => {
   try {
-    const article = await ArticleModel.deleteOne({ _id: req.params.id })
-    res.send(article)
+    const Product = await ProductModel.deleteOne({ _id: req.params.id })
+    res.send(Product)
   } catch (err) {
     res.status(400).json(err)
   }

@@ -1,15 +1,15 @@
 import express from 'express'
-import restaurantController from '../controllers/RestaurantController'
-const restaurantRouter = express.Router()
+import RestaurantController from '../controllers/RestaurantController'
+const RestaurantRouter = express.Router()
 
-restaurantRouter.post('/', express.json(), restaurantController.create)
+RestaurantRouter.post('/', express.json(), RestaurantController.create)
 
-restaurantRouter.get('/', restaurantController.getAll)
+RestaurantRouter.get('/', RestaurantController.getAll)
 
-restaurantRouter.get('/:id', restaurantController.getOne)
+RestaurantRouter.get('/:id', RestaurantController.getOne)
 
-restaurantRouter.patch('/:id', express.json(), restaurantController.modify)
+RestaurantRouter.patch('/:id', express.json(), RestaurantController.modify)
 
-restaurantRouter.delete('/:id', restaurantController.remove)
+RestaurantRouter.delete('/:id', RestaurantController.remove)
 
-export default restaurantRouter
+export default RestaurantRouter

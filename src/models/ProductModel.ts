@@ -8,7 +8,7 @@ interface IProduct {
   restaurant: string
 }
 
-const ArticleSchema = new Schema<IProduct>({
+const ProductSchema = new Schema<IProduct>({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   description: { type: String, required: true },
@@ -16,4 +16,4 @@ const ArticleSchema = new Schema<IProduct>({
   restaurant: { type: String, required: true }
 })
 
-export default model('Article', ArticleSchema)
+export default model('Product', ProductSchema)
