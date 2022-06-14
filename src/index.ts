@@ -15,14 +15,14 @@ async function start () {
 }
 
 async function stop () {
-  console.log('Shuting down ...')
+  console.log('Shutting down ...')
   try {
     await startPromise
     await server.stop()
-    console.log('Shuting down now !')
+    console.log('Shutting down now !')
     process.exit(0)
   } catch (error) {
-    console.error('Error during shuting down :', error)
+    console.error('Error during shutting down :', error)
     process.exit(1)
   }
 }
