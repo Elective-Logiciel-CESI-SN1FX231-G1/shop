@@ -8,7 +8,7 @@ restaurantRouter.get('/', restaurantController.getAll)
 
 restaurantRouter.get('/:id', restaurantController.getOne)
 
-restaurantRouter.patch('/:id', restaurantController.modify)
+restaurantRouter.patch('/:id', express.json(), restaurantController.modify)
 
 restaurantRouter.delete('/:id', restaurantController.remove)
 
