@@ -18,7 +18,7 @@ export const getAll: Handler = async (req, res) => {
 }
 
 /**
- * @api {get} /restaurant/:id Request User information
+ * @api {get} /restaurants/:id Request Restaurant information
  * @apiName GetOne
  * @apiGroup Restaurant
  *
