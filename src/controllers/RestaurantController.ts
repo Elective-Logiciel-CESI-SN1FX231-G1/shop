@@ -25,7 +25,7 @@ export const getOne: Handler = async (req, res) => {
 
 export const modify: Handler = async (req, res) => {
   try {
-    const Restaurant = await RestaurantModel.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, { new: true }).exec()
+    const Restaurant = await RestaurantModel.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, { new: true })
     if (Restaurant) res.send(Restaurant)
     else res.status(404).send('Restaurant Not Found')
   } catch (err) {
