@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Elective-Logiciel-CESI-SN1FX231-G1/shop#readme",
   "dependencies": {
+    "apidoc": "^0.51.1",
     "config": "^3.3.7",
     "express": "^4.18.1",
     "express-async-errors": "^3.1.1",
