@@ -1,8 +1,10 @@
 import { Handler } from 'express'
 import ProductModel from '../models/ProductModel'
+import shortid from 'shortid'
 
 export const create: Handler = async (req, res) => {
   const Product = new ProductModel(req.body)
+  Product._id = shortid()
   try {
     await Product.save()
     res.status(201).send(Product)

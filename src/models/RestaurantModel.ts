@@ -18,7 +18,8 @@ interface IRestaurant {
     {from:Date, to:Date}
   ],
   types: Array<string>,
-  isClosed: boolean
+  isClosed: boolean,
+  _id: string
 }
 
 const RestaurantSchema = new Schema<IRestaurant>({
@@ -42,7 +43,8 @@ const RestaurantSchema = new Schema<IRestaurant>({
     }
   ],
   types: [{ type: String, required: true }],
-  isClosed: { type: Boolean, required: true }
+  isClosed: { type: Boolean, required: true },
+  _id: { type: String, required: true }
 })
 
 export default model('Restaurant', RestaurantSchema)

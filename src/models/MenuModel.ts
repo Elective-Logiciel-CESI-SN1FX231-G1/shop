@@ -1,23 +1,25 @@
 import { Schema, model } from 'mongoose'
+import { rawProductSchema } from './ProductModel'
+import type IProduct from './ProductModel'
 
-export interface IProduct {
+interface IMenu {
   name: string,
   price: number,
   description: string,
   image: string,
+  products: Array<typeof IProduct>,
   restaurant: string,
   _id: string
 }
 
-export const rawProductSchema = {
+const MenuSchema = new Schema<IMenu>({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   description: { type: String, required: true },
   image: { type: String, required: true },
-  restaurant: { type: String, required: true },
+  products: [rawProductSchema],
+  restaurant: { type: String, required: true, unique: true },
   _id: { type: String, required: true }
-}
+})
 
-const ProductSchema = new Schema<IProduct>(rawProductSchema)
-
-export default model('Product', ProductSchema)
+export default model('Menu', MenuSchema)

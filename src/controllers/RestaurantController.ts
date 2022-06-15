@@ -1,8 +1,10 @@
 import { Handler } from 'express'
 import RestaurantModel from '../models/RestaurantModel'
+import shortid from 'shortid'
 
 export const create: Handler = async (req, res) => {
   const Restaurant = new RestaurantModel(req.body)
+  Restaurant._id = shortid()
   try {
     await Restaurant.save()
     res.status(201).send(Restaurant)
