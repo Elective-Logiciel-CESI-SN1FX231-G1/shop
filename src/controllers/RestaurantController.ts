@@ -19,7 +19,8 @@ export const getAll: Handler = async (req, res) => {
 
 export const getOne: Handler = async (req, res) => {
   const Restaurant = await RestaurantModel.findOne({ _id: req.params.id })
-  Restaurant ? res.send(Restaurant) : res.status(404).send('Restaurant Not Found')
+  if (Restaurant) res.send(Restaurant)
+  else res.status(404).send('Restaurant Not Found')
 }
 
 export const modify: Handler = async (req, res) => {
