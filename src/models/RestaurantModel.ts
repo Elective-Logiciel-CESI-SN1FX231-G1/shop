@@ -2,8 +2,8 @@ import { Schema, model } from 'mongoose'
 
 interface IRestaurant {
   owner: {
-    firstName: string,
-    lastName: string,
+    firstname: string,
+    lastname: string,
     phone: string,
     email: string
   },
