@@ -1,0 +1,7 @@
+{
+  "name": "Shop Service",
+  "version": "0.1.0",
+  "description": "apiDoc basic example",
+  "title": "Documentation for Shop Service",
+  "url" : "http://localhost:8080/api"
+}
