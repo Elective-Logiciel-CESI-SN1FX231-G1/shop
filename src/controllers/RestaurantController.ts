@@ -36,7 +36,8 @@ export const modify: Handler = async (req, res) => {
 
 export const remove: Handler = async (req, res) => {
   const Restaurant = await RestaurantModel.deleteOne({ _id: req.params.id })
-  Restaurant.deletedCount ? res.sendStatus(204) : res.status(404).send('Restaurant Not Found')
+  if (Restaurant.deletedCount) res.sendStatus(204)
+  else res.status(404).send('Restaurant Not Found')
 }
 
 export default {
