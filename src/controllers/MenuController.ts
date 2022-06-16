@@ -2,10 +2,19 @@ import { Handler } from 'express'
 import MenuModel from '../models/MenuModel'
 import shortid from 'shortid'
 import ProductModel from '../models/ProductModel'
+import RestaurantModel from '../models/RestaurantModel'
 
 export const create: Handler = async (req, res) => {
+  const Restaurant = await RestaurantModel.find({ _id: req.body.restaurant })
+  if (Restaurant.length === 0) return res.status(400).send('Restaurant Not Found')
+
   const Products = await ProductModel.find({ _id: { $in: req.body.products } })
   req.body.products = req.body.products.map((_id: string) => Products.find(p => p._id === _id))
+
+  for (const Product of req.body.products) {
+    if (!Product) return res.status(400).send('One or more product(s) is not found')
+    if (Product.restaurant !== req.body.restaurant) return res.status(400).send('One or more product(s) are not sell by this restaurant')
+  }
   const Menu = new MenuModel(req.body)
   Menu._id = shortid()
   try {
@@ -29,9 +38,17 @@ export const getOne: Handler = async (req, res) => {
 }
 
 export const modify: Handler = async (req, res) => {
+  const Restaurant = await RestaurantModel.find({ _id: req.body.restaurant })
+  if (Restaurant.length === 0) return res.status(400).send('Restaurant Not Found')
+
   try {
     const Products = await ProductModel.find({ _id: { $in: req.body.products } })
     req.body.products = req.body.products.map((_id: string) => Products.find(p => p._id === _id))
+    for (const Product of req.body.products) {
+      if (!Product) return res.status(400).send('One or more product(s) are not found')
+      if (Product.restaurant !== req.body.restaurant) return res.status(400).send('One or more product(s) are not sell by this restaurant')
+    }
+
     const Menu = await MenuModel.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, { new: true })
     if (Menu) res.send(Menu)
     else res.status(404).send('Menu Not Found')

@@ -2,8 +2,12 @@ import { Handler } from 'express'
 import ProductModel from '../models/ProductModel'
 import MenuModel from '../models/MenuModel'
 import shortid from 'shortid'
+import RestaurantModel from '../models/RestaurantModel'
 
 export const create: Handler = async (req, res) => {
+  const Restaurant = await RestaurantModel.findOne({ _id: req.body.restaurant })
+  if (!Restaurant) return res.status(404).send('No restaurant found')
+
   const Product = new ProductModel(req.body)
   Product._id = shortid()
   try {
@@ -15,7 +19,6 @@ export const create: Handler = async (req, res) => {
   }
 }
 
-// A finir
 /**
  * @api {get} /products/ Request Products information
  * @apiName GetAll
@@ -90,6 +93,9 @@ export const getOne: Handler = async (req, res) => {
 }
 
 export const modify: Handler = async (req, res) => {
+  const Restaurant = await RestaurantModel.findOne({ _id: req.body.restaurant })
+  if (!Restaurant) return res.status(404).send('No restaurant found')
+
   try {
     const Product = await ProductModel.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, { new: true })
     if (Product) res.send(Product)
