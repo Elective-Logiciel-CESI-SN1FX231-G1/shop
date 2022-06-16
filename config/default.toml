@@ -3,7 +3,7 @@ verifyUrl="http://localhost:8080/auth/api/auth/verify"
 
 [http]
 port=44200
-publicUrl="http://localhost:44200/"
+publicUrl="http://localhost:8080/shop"
 
 [mongo]
 url="mongodb://localhost:27017/shop-development"
