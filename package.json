@@ -19,11 +19,11 @@
   "homepage": "https://github.com/Elective-Logiciel-CESI-SN1FX231-G1/shop#readme",
   "dependencies": {
     "apidoc": "^0.51.1",
+    "async-mqtt": "^2.6.2",
     "config": "^3.3.7",
     "express": "^4.18.1",
     "express-async-errors": "^3.1.1",
     "mongoose": "^6.3.8",
-    "mqtt": "^4.3.7",
     "shortid": "^2.2.16",
     "toml": "^3.0.0"
   },
