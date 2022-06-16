@@ -1,5 +1,6 @@
 import { Handler } from 'express'
 import ProductModel from '../models/ProductModel'
+import MenuModel from '../models/MenuModel'
 import shortid from 'shortid'
 
 export const create: Handler = async (req, res) => {
@@ -100,9 +101,14 @@ export const modify: Handler = async (req, res) => {
 }
 
 export const remove: Handler = async (req, res) => {
-  const Product = await ProductModel.deleteOne({ _id: req.params.id })
-  if (Product.deletedCount) res.send(Product)
-  else res.status(404).send('Product Not found')
+  const MenusContainingTheProduct = await MenuModel.find({ products: { $elemMatch: { _id: req.params.id } } })
+  if (MenusContainingTheProduct.length === 0) {
+    const Product = await ProductModel.deleteOne({ _id: req.params.id })
+    if (Product.deletedCount) res.send(Product)
+    else res.status(404).send('Product Not found')
+  } else {
+    res.status(400).send('Product Cannot Be Deleted because it\'s used in some menu(s)')
+  }
 }
 
 export default {
