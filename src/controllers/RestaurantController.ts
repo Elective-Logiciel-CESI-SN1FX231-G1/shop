@@ -3,21 +3,15 @@ import RestaurantModel from '../models/RestaurantModel'
 import shortid from 'shortid'
 
 export const create: Handler = async (req, res) => {
-  if (!req.user) return res.status(400).send('User not authenticated')
-  if (req.user.role === 'restaurateur') {
-    req.body.owner = req.user
-
-    const Restaurant = new RestaurantModel(req.body)
-    Restaurant._id = shortid()
-    try {
-      await Restaurant.save()
-      res.status(201).send(Restaurant)
-    } catch (err) {
-      if (err instanceof Error && err.message) res.status(400).send(err.message)
-      else throw err
-    }
-  } else {
-    return res.status(400).send('User is not a restaurateur, please login to a restaurateur account')
+  req.body.owner = req.user
+  const Restaurant = new RestaurantModel(req.body)
+  Restaurant._id = shortid()
+  try {
+    await Restaurant.save()
+    res.status(201).send(Restaurant)
+  } catch (err) {
+    if (err instanceof Error && err.message) res.status(400).send(err.message)
+    else throw err
   }
 }
 
@@ -96,43 +90,33 @@ export const getOne: Handler = async (req, res) => {
 }
 
 export const modify: Handler = async (req, res) => {
-  if (!req.user) return res.status(400).send('User not authenticated')
-  if (req.user.role === 'restaurateur') {
-    const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user._id }, { projection: { _id: 1 } })
-    if (ownerRestaurant.length === 0) return res.status(400).send('Restaurant Not Found')
-    if (ownerRestaurant[0]._id === req.params.id) {
-      req.body.owner = req.user
-      try {
-        const Restaurant = await RestaurantModel.findOneAndUpdate(
-          { _id: req.params.id },
-          { $set: req.body },
-          { new: true }
-        )
-        if (Restaurant) res.send(Restaurant)
-        else res.status(404).send('Restaurant Not Found')
-      } catch (err) {
-        if (err instanceof Error && err.message) res.status(400).send(err.message)
-        else throw err
-      }
-    } else return res.status(400).send('You are not the owner of this restaurant')
-  } else {
-    return res.status(400).send('User is not a restaurateur, please login to a restaurateur account')
-  }
+  const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
+  if (ownerRestaurant.length === 0) return res.status(400).send('User doesn\'t own a restaurant')
+  if (ownerRestaurant[0]._id === req.params.id) {
+    req.body.owner = req.user
+    try {
+      const Restaurant = await RestaurantModel.findOneAndUpdate(
+        { _id: req.params.id },
+        { $set: req.body },
+        { new: true }
+      )
+      if (Restaurant) res.send(Restaurant)
+      else res.status(404).send('Restaurant Not Found')
+    } catch (err) {
+      if (err instanceof Error && err.message) res.status(400).send(err.message)
+      else throw err
+    }
+  } else return res.status(400).send('You are not the owner of this restaurant')
 }
 
 export const remove: Handler = async (req, res) => {
-  if (!req.user) return res.status(400).send('User not authenticated')
-  if (req.user.role === 'restaurateur') {
-    const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user._id }, { projection: { _id: 1 } })
-    if (ownerRestaurant.length === 0) return res.status(400).send('Restaurant Not Found')
-    if (ownerRestaurant[0]._id === req.params.id) {
-      req.body.owner = req.user
-      const Restaurant = await RestaurantModel.deleteOne({ _id: req.params.id })
-      if (Restaurant.deletedCount) res.sendStatus(204)
-      else res.status(404).send('Restaurant Not Found')
-    }
-  } else {
-    return res.status(400).send('User is not a restaurateur, please login to a restaurateur account')
+  const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
+  if (ownerRestaurant.length === 0) return res.status(400).send('User doesn\'t own a restaurant')
+  if (ownerRestaurant[0]._id === req.params.id) {
+    req.body.owner = req.user
+    const Restaurant = await RestaurantModel.deleteOne({ _id: req.params.id })
+    if (Restaurant.deletedCount) res.sendStatus(204)
+    else res.status(404).send('Restaurant Not Found')
   }
 }
 
