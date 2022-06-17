@@ -117,9 +117,14 @@ export const modify: Handler = async (req, res) => {
 }
 
 export const remove: Handler = async (req, res) => {
-  const Restaurant = await RestaurantModel.deleteOne({ _id: req.params.id })
-  if (Restaurant.deletedCount) res.sendStatus(204)
-  else res.status(404).send('Restaurant Not Found')
+  if (!req.user) return res.status(400).send('User not authenticated')
+  if (req.user.role === 'restaurateur') {
+    const Restaurant = await RestaurantModel.deleteOne({ _id: req.params.id })
+    if (Restaurant.deletedCount) res.sendStatus(204)
+    else res.status(404).send('Restaurant Not Found')
+  } else {
+    return res.status(400).send('User is not a restaurateur, please login to a restaurateur account')
+  }
 }
 
 export default {
