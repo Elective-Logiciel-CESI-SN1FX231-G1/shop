@@ -5,14 +5,19 @@ import ProductModel from '../models/ProductModel'
 import RestaurantModel from '../models/RestaurantModel'
 
 export const create: Handler = async (req, res) => {
-  const Restaurant = await RestaurantModel.find({ _id: req.body.restaurant })
+  if (!req.user) return res.status(400).send('User not authenticated')
+  const Restaurant = await RestaurantModel.find({ 'owner._id': req.user._id }, { projection: { _id: 1 } })
   if (Restaurant.length === 0) return res.status(400).send('Restaurant Not Found')
+  req.body.restaurant = Restaurant[0]._id
 
   const Products = await ProductModel.find({ _id: { $in: req.body.products } })
   req.body.products = req.body.products.map((_id: string) => Products.find(p => p._id === _id))
 
   for (const Product of req.body.products) {
     if (!Product) return res.status(400).send('One or more product(s) is not found')
+    console.log(Product.restaurant)
+    console.log(req.body.restaurant)
+
     if (Product.restaurant !== req.body.restaurant) return res.status(400).send('One or more product(s) are not sell by this restaurant')
   }
   const Menu = new MenuModel(req.body)
