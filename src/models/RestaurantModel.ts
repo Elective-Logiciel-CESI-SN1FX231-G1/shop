@@ -1,12 +1,8 @@
 import { Schema, model } from 'mongoose'
+import { User } from '../auth'
 
 interface IRestaurant {
-  owner: {
-    firstname: string,
-    lastname: string,
-    phone: string,
-    email: string
-  },
+  owner: User,
   name: string,
   description: string,
   address: string,
@@ -24,10 +20,12 @@ interface IRestaurant {
 
 const RestaurantSchema = new Schema<IRestaurant>({
   owner: {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    _id: { type: String, required: true },
+    firstname: { type: String, required: true },
+    lastname: { type: String, required: true },
     phone: { type: String, required: true },
-    email: { type: String, required: true, unique: true }
+    email: { type: String, required: true, unique: true },
+    role: { type: String, required: true }
   },
   name: { type: String, required: true },
   description: { type: String },

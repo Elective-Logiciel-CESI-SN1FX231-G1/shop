@@ -3,14 +3,21 @@ import RestaurantModel from '../models/RestaurantModel'
 import shortid from 'shortid'
 
 export const create: Handler = async (req, res) => {
-  const Restaurant = new RestaurantModel(req.body)
-  Restaurant._id = shortid()
-  try {
-    await Restaurant.save()
-    res.status(201).send(Restaurant)
-  } catch (err) {
-    if (err instanceof Error && err.message) res.status(400).send(err.message)
-    else throw err
+  if (!req.user) return res.status(400).send('User not authenticated')
+  if (req.user.role === 'restaurateur') {
+    req.body.owner = req.user
+
+    const Restaurant = new RestaurantModel(req.body)
+    Restaurant._id = shortid()
+    try {
+      await Restaurant.save()
+      res.status(201).send(Restaurant)
+    } catch (err) {
+      if (err instanceof Error && err.message) res.status(400).send(err.message)
+      else throw err
+    }
+  } else {
+    return res.status(400).send('User is not a restaurateur, please login to a restaurateur account')
   }
 }
 
@@ -89,17 +96,23 @@ export const getOne: Handler = async (req, res) => {
 }
 
 export const modify: Handler = async (req, res) => {
-  try {
-    const Restaurant = await RestaurantModel.findOneAndUpdate(
-      { _id: req.params.id },
-      { $set: req.body },
-      { new: true }
-    )
-    if (Restaurant) res.send(Restaurant)
-    else res.status(404).send('Restaurant Not Found')
-  } catch (err) {
-    if (err instanceof Error && err.message) res.status(400).send(err.message)
-    else throw err
+  if (!req.user) return res.status(400).send('User not authenticated')
+  if (req.user.role === 'restaurateur') {
+    req.body.owner = req.user
+    try {
+      const Restaurant = await RestaurantModel.findOneAndUpdate(
+        { _id: req.params.id },
+        { $set: req.body },
+        { new: true }
+      )
+      if (Restaurant) res.send(Restaurant)
+      else res.status(404).send('Restaurant Not Found')
+    } catch (err) {
+      if (err instanceof Error && err.message) res.status(400).send(err.message)
+      else throw err
+    }
+  } else {
+    return res.status(400).send('User is not a restaurateur, please login to a restaurateur account')
   }
 }
 
