@@ -92,21 +92,20 @@ export const getOne: Handler = async (req, res) => {
 export const modify: Handler = async (req, res) => {
   const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
   if (ownerRestaurant.length === 0) return res.status(400).send('User doesn\'t own a restaurant')
-  if (ownerRestaurant[0]._id === req.params.id) {
-    req.body.owner = req.user
-    try {
-      const Restaurant = await RestaurantModel.findOneAndUpdate(
-        { _id: req.params.id },
-        { $set: req.body },
-        { new: true }
-      )
-      if (Restaurant) res.send(Restaurant)
-      else res.status(404).send('Restaurant Not Found')
-    } catch (err) {
-      if (err instanceof Error && err.message) res.status(400).send(err.message)
-      else throw err
-    }
-  } else return res.status(400).send('You are not the owner of this restaurant')
+  if (ownerRestaurant[0]._id !== req.params.id) return res.status(400).send('You are not the owner of this restaurant')
+  req.body.owner = req.user
+  try {
+    const Restaurant = await RestaurantModel.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: req.body },
+      { new: true }
+    )
+    if (Restaurant) res.send(Restaurant)
+    else res.status(404).send('Restaurant Not Found')
+  } catch (err) {
+    if (err instanceof Error && err.message) res.status(400).send(err.message)
+    else throw err
+  }
 }
 
 export const remove: Handler = async (req, res) => {
