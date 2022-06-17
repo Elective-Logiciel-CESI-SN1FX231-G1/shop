@@ -117,7 +117,7 @@ export const remove: Handler = async (req, res) => {
     const Restaurant = await RestaurantModel.deleteOne({ _id: req.params.id })
     if (Restaurant.deletedCount) res.sendStatus(204)
     else res.status(404).send('Restaurant Not Found')
-  }
+  } return res.status(400).send('You are not the owner of this restaurant')
 }
 
 export default {

@@ -5,18 +5,20 @@ import shortid from 'shortid'
 import RestaurantModel from '../models/RestaurantModel'
 
 export const create: Handler = async (req, res) => {
-  const Restaurant = await RestaurantModel.findOne({ _id: req.body.restaurant })
-  if (!Restaurant) return res.status(404).send('No restaurant found')
-
-  const Product = new ProductModel(req.body)
-  Product._id = shortid()
-  try {
-    await Product.save()
-    res.status(201).send(Product)
-  } catch (err) {
-    if (err instanceof Error && err.message) res.status(400).send(err.message)
-    else throw err
-  }
+  const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
+  if (ownerRestaurant.length === 0) return res.status(400).send('User doesn\'t own a restaurant')
+  if (ownerRestaurant[0]._id === req.body.restaurant) {
+    req.body.restaurant = ownerRestaurant[0]._id
+    const Product = new ProductModel(req.body)
+    Product._id = shortid()
+    try {
+      await Product.save()
+      res.status(201).send(Product)
+    } catch (err) {
+      if (err instanceof Error && err.message) res.status(400).send(err.message)
+      else throw err
+    }
+  } else return res.status(400).send('You are not the owner of this restaurant')
 }
 
 /**
@@ -93,28 +95,33 @@ export const getOne: Handler = async (req, res) => {
 }
 
 export const modify: Handler = async (req, res) => {
-  const Restaurant = await RestaurantModel.findOne({ _id: req.body.restaurant })
-  if (!Restaurant) return res.status(404).send('No restaurant found')
-
-  try {
-    const Product = await ProductModel.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, { new: true })
-    if (Product) res.send(Product)
-    else res.status(404).send('Product Not Found')
-  } catch (err) {
-    if (err instanceof Error && err.message) res.status(400).send(err.message)
-    else throw err
-  }
+  const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
+  if (ownerRestaurant.length === 0) return res.status(400).send('User doesn\'t own a restaurant')
+  if (ownerRestaurant[0]._id === req.body.restaurant) {
+    try {
+      const Product = await ProductModel.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, { new: true })
+      if (Product) res.send(Product)
+      else res.status(404).send('Product Not Found')
+    } catch (err) {
+      if (err instanceof Error && err.message) res.status(400).send(err.message)
+      else throw err
+    }
+  } else return res.status(404).send('You are not the owner of this restaurant')
 }
 
 export const remove: Handler = async (req, res) => {
-  const MenusContainingTheProduct = await MenuModel.find({ products: { $elemMatch: { _id: req.params.id } } })
-  if (MenusContainingTheProduct.length === 0) {
-    const Product = await ProductModel.deleteOne({ _id: req.params.id })
-    if (Product.deletedCount) res.send(Product)
-    else res.status(404).send('Product Not found')
-  } else {
-    res.status(400).send('Product Cannot Be Deleted because it\'s used in some menu(s)')
-  }
+  const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
+  if (ownerRestaurant.length === 0) return res.status(400).send('User doesn\'t own a restaurant')
+  if (ownerRestaurant[0]._id === req.params.id) {
+    const MenusContainingTheProduct = await MenuModel.find({ products: { $elemMatch: { _id: req.params.id } } })
+    if (MenusContainingTheProduct.length === 0) {
+      const Product = await ProductModel.deleteOne({ _id: req.params.id })
+      if (Product.deletedCount) res.send(Product)
+      else res.status(404).send('Product Not found')
+    } else {
+      res.status(400).send('Product Cannot Be Deleted because it\'s used in some menu(s)')
+    }
+  } else res.status(404).send('You are not the owner of this restaurant')
 }
 
 export default {
