@@ -2,6 +2,8 @@ import { Handler } from 'express'
 import RestaurantModel from '../models/RestaurantModel'
 import shortid from 'shortid'
 import { User } from '../auth'
+import MenuModel from '../models/MenuModel'
+import ProductModel from '../models/ProductModel'
 
 export const create: Handler = async (req, res) => {
   req.body.owner = req.user
@@ -137,11 +139,21 @@ export const processAccountUpdate = async (editedUser: User) => {
   }
 }
 
+export const processAccountDelete = async (userId: String) => {
+  const restaurantToDelete = await RestaurantModel.findOne({ 'owner._id': userId })
+  if (restaurantToDelete) {
+    await MenuModel.deleteMany({ restaurant: restaurantToDelete._id })
+    await ProductModel.deleteMany({ restaurant: restaurantToDelete._id })
+    await RestaurantModel.deleteOne({ _id: restaurantToDelete._id })
+  }
+}
+
 export default {
   create,
   getAll,
   getOne,
   modify,
   remove,
-  processAccountUpdate
+  processAccountUpdate,
+  processAccountDelete
 }
