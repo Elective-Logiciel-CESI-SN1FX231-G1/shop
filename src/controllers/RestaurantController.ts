@@ -1,6 +1,7 @@
 import { Handler } from 'express'
 import RestaurantModel from '../models/RestaurantModel'
 import shortid from 'shortid'
+import { User } from '../auth'
 
 export const create: Handler = async (req, res) => {
   req.body.owner = req.user
@@ -118,10 +119,29 @@ export const remove: Handler = async (req, res) => {
   } return res.status(400).send('You are not the owner of this restaurant')
 }
 
+export const processAccountUpdate = async (editedUser: User) => {
+  if (editedUser.role === 'restaurateur') {
+    await RestaurantModel.findOneAndUpdate(
+      { 'owner._id': editedUser._id },
+      {
+        $set: {
+          'owner.firstname': editedUser.firstname,
+          'owner.lastName': editedUser.lastname,
+          'owner.email': editedUser.email,
+          'owner.phone': editedUser.phone,
+          'owner.role': editedUser.role
+        }
+      },
+      { new: true }
+    )
+  }
+}
+
 export default {
   create,
   getAll,
   getOne,
   modify,
-  remove
+  remove,
+  processAccountUpdate
 }
