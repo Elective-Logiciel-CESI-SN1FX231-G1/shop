@@ -9,6 +9,6 @@ CouponRouter.get('/', CouponController.getAll)
 
 CouponRouter.get('/:id', CouponController.getOne)
 
-CouponRouter.post('/:id', express.json(), CouponController.modify)
+CouponRouter.post('/:id', express.json(), CouponController.use)
 
 export default CouponRouter

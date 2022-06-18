@@ -15,7 +15,7 @@ interface IRestaurant {
   ],
   types: Array<string>,
   isClosed: boolean,
-  boosted: number,
+  couponDate: Date,
   _id: string
 }
 
@@ -43,7 +43,7 @@ const RestaurantSchema = new Schema<IRestaurant>({
   ],
   types: [{ type: String, required: true }],
   isClosed: { type: Boolean, required: true },
-  boosted: { type: Number, required: false },
+  couponDate: { type: Date, required: false },
   _id: { type: String, required: true }
 })
 
