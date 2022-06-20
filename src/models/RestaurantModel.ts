@@ -42,7 +42,7 @@ const RestaurantSchema = new Schema<IRestaurant>({
     }
   ],
   types: [{ type: String, required: true }],
-  isClosed: { type: Boolean, required: true },
+  isClosed: { type: Boolean, required: true, default: false },
   couponDate: { type: Date, required: false },
   _id: { type: String, required: true }
 })
