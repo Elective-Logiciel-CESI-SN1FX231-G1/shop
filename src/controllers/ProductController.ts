@@ -107,8 +107,16 @@ export const modify: Handler = async (req, res) => {
   if (ownerRestaurant._id === currentProduct.restaurant) {
     try {
       const Product = await ProductModel.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, { new: true })
-      if (Product) res.send(Product)
-      else res.status(404).send('Product Not Found')
+      if (!Product) return res.sendStatus(404)
+      const menusWithProduct = await MenuModel.find({ 'products._id': Product._id, restaurant: Product.restaurant })
+      for (const menu of menusWithProduct) {
+        menu.products = menu.products.map((p: any) => {
+          if (p._id === currentProduct._id) return Product
+          else return p
+        }) as any[]
+        await menu.save()
+      }
+      res.send(Product)
     } catch (err) {
       if (err instanceof Error && err.message) res.status(400).send(err.message)
       else throw err

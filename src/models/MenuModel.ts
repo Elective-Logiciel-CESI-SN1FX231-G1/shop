@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose'
 import { rawProductSchema } from './ProductModel'
 import type IProduct from './ProductModel'
 
-interface IMenu {
+export interface IMenu {
   name: string,
   price: number,
   description: string,
