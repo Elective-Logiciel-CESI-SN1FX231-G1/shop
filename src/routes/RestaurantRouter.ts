@@ -1,11 +1,13 @@
 import express from 'express'
 import { restrictedToRoles } from '../auth'
 import RestaurantController from '../controllers/RestaurantController'
+import paginate from '../utils/pagination'
+
 const RestaurantRouter = express.Router()
 
 RestaurantRouter.post('/', restrictedToRoles('restaurateur'), express.json(), RestaurantController.create)
 
-RestaurantRouter.get('/', RestaurantController.getAll)
+RestaurantRouter.get('/', paginate, RestaurantController.getAll)
 
 RestaurantRouter.get('/:id', RestaurantController.getOne)
 

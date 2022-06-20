@@ -30,8 +30,15 @@ export const create: Handler = async (req, res) => {
 }
 
 export const getAll: Handler = async (req, res) => {
-  const Menus = await MenuModel.find()
-  res.send(Menus)
+  const query = {}
+  const [results, count] = await Promise.all([
+    MenuModel.find(query).skip(req.pagination.skip).limit(req.pagination.size).exec(),
+    MenuModel.countDocuments(query).exec()
+  ])
+  res.send({
+    count,
+    results
+  })
 }
 
 export const getOne: Handler = async (req, res) => {

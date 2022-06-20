@@ -19,8 +19,15 @@ export const create: Handler = async (req, res) => {
 }
 
 export const getAll: Handler = async (req, res) => {
-  const Restaurants = await RestaurantModel.find()
-  res.send(Restaurants)
+  const query = {}
+  const [results, count] = await Promise.all([
+    RestaurantModel.find(query).skip(req.pagination.skip).limit(req.pagination.size).exec(),
+    RestaurantModel.countDocuments(query).exec()
+  ])
+  res.send({
+    count,
+    results
+  })
 }
 
 /**

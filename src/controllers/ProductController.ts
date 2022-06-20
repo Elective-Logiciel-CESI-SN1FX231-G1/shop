@@ -52,8 +52,15 @@ export const create: Handler = async (req, res) => {
  *     }
  */
 export const getAll: Handler = async (req, res) => {
-  const Products = await ProductModel.find()
-  res.send(Products)
+  const query = {}
+  const [results, count] = await Promise.all([
+    ProductModel.find(query).skip(req.pagination.skip).limit(req.pagination.size).exec(),
+    ProductModel.countDocuments(query).exec()
+  ])
+  res.send({
+    count,
+    results
+  })
 }
 
 /**
