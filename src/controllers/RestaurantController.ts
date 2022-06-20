@@ -101,7 +101,7 @@ export const getOne: Handler = async (req, res) => {
 
 export const modify: Handler = async (req, res) => {
   const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
-  if (ownerRestaurant.length === 0) return res.status(400).send('User doesn\'t own a restaurant')
+  if (ownerRestaurant.length === 0) return res.status(400).send('User does not own a restaurant')
   if (ownerRestaurant[0]._id !== req.params.id) return res.status(400).send('You are not the owner of this restaurant')
   req.body.owner = req.user
   try {
@@ -120,7 +120,7 @@ export const modify: Handler = async (req, res) => {
 
 export const remove: Handler = async (req, res) => {
   const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
-  if (ownerRestaurant.length === 0) return res.status(400).send('User doesn\'t own a restaurant')
+  if (ownerRestaurant.length === 0) return res.status(400).send('User does not own a restaurant')
   if (ownerRestaurant[0]._id === req.params.id) {
     const Restaurant = await RestaurantModel.deleteOne({ _id: req.params.id })
     if (Restaurant.deletedCount) res.sendStatus(204)

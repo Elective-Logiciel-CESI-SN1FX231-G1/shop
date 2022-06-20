@@ -36,7 +36,7 @@ export const getOne: Handler = async (req, res) => {
 export const use: Handler = async (req, res) => {
   const ParamCoupon = await CouponModel.findOne({ _id: req.params.id })
 
-  if (!ParamCoupon) return res.status(404).send('User doesn\'t own a Coupon')
+  if (!ParamCoupon) return res.status(404).send('User does not own a Coupon')
   if (req.user?._id !== ParamCoupon.user._id) return res.status(403).send('Coupon is not yours')
   if (ParamCoupon.isUsed) return res.status(400).send('Coupon has already been used')
   await CouponModel.findOneAndUpdate(

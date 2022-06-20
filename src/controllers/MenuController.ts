@@ -6,7 +6,7 @@ import RestaurantModel from '../models/RestaurantModel'
 
 export const create: Handler = async (req, res) => {
   const Restaurant = await RestaurantModel.findOne({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
-  if (!Restaurant) return res.status(400).send('User doesn\'t own a restaurant')
+  if (!Restaurant) return res.status(400).send('User does not own a restaurant')
   req.body.restaurant = Restaurant._id
 
   const Products = await ProductModel.find({ _id: { $in: req.body.products } })
@@ -47,7 +47,7 @@ export const getOne: Handler = async (req, res) => {
 
 export const modify: Handler = async (req, res) => {
   const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
-  if (ownerRestaurant.length === 0) return res.status(400).send('User doesn\'t own a restaurant')
+  if (ownerRestaurant.length === 0) return res.status(400).send('User does not own a restaurant')
   if (ownerRestaurant[0]._id === req.body.restaurant) {
     try {
       const Products = await ProductModel.find({ _id: { $in: req.body.products } })
@@ -69,7 +69,7 @@ export const modify: Handler = async (req, res) => {
 
 export const remove: Handler = async (req, res) => {
   const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
-  if (ownerRestaurant.length === 0) return res.status(400).send('User doesn\'t own a restaurant')
+  if (ownerRestaurant.length === 0) return res.status(400).send('User does not own a restaurant')
   const RestaurantMenu = await MenuModel.findOne({ _id: req.params.id })
   if (!RestaurantMenu) return res.status(404).send('Menu Not found')
 
