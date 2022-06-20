@@ -50,6 +50,15 @@ export const create: Handler = async (req, res) => {
  *     }
  */
 export const getAll: Handler = async (req, res) => {
+  const query = {}
+  const [results, count] = await Promise.all([
+    ProductModel.find(query).skip(req.pagination.skip).limit(req.pagination.size).exec(),
+    ProductModel.countDocuments(query).exec()
+  ])
+  res.send({
+    count,
+    results
+  })
 }
 
 /**
@@ -91,9 +100,11 @@ export const getOne: Handler = async (req, res) => {
 }
 
 export const modify: Handler = async (req, res) => {
-  const ownerRestaurant = await RestaurantModel.find({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
-  if (ownerRestaurant.length === 0) return res.status(400).send('User does not own a restaurant')
-  if (ownerRestaurant[0]._id === req.body.restaurant) {
+  const ownerRestaurant = await RestaurantModel.findOne({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
+  if (!ownerRestaurant) return res.status(400).send('User does not own a restaurant')
+  const currentProduct = await ProductModel.findOne({ _id: req.params.id })
+  if (!currentProduct) return res.status(404).send('Product does not exist')
+  if (ownerRestaurant._id === currentProduct.restaurant) {
     try {
       const Product = await ProductModel.findOneAndUpdate({ _id: req.params.id }, { $set: req.body }, { new: true })
       if (Product) res.send(Product)
@@ -109,7 +120,7 @@ export const remove: Handler = async (req, res) => {
   const ownerRestaurant = await RestaurantModel.findOne({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
   if (!ownerRestaurant) return res.status(400).send('User does not own a restaurant')
   const currentProduct = await ProductModel.findOne({ _id: req.params.id })
-  if (!currentProduct) return res.status(400).send('Product does not exist')
+  if (!currentProduct) return res.status(404).send('Product does not exist')
   if (ownerRestaurant._id === currentProduct.restaurant) {
     const MenusContainingTheProduct = await MenuModel.find({ products: { $elemMatch: { _id: req.params.id } } })
     if (MenusContainingTheProduct.length === 0) {
