@@ -1,11 +1,12 @@
 import { Schema, model } from 'mongoose'
 import { User } from '../auth'
 
-interface IRestaurant {
+export interface IRestaurant {
   owner: User,
   name: string,
   description: string,
   address: string,
+  image: string,
   position:{
     lon:number,
     lat:number
@@ -29,6 +30,7 @@ const RestaurantSchema = new Schema<IRestaurant>({
     role: { type: String, required: true }
   },
   name: { type: String, required: true },
+  image: { type: String, required: true },
   description: { type: String },
   address: { type: String, required: true },
   position: {
@@ -47,4 +49,6 @@ const RestaurantSchema = new Schema<IRestaurant>({
   _id: { type: String, required: true }
 })
 
-export default model('Restaurant', RestaurantSchema)
+const RestaurantModel = model('Restaurant', RestaurantSchema)
+
+export default RestaurantModel
