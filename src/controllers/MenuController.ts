@@ -1,8 +1,9 @@
 import { Handler } from 'express'
-import MenuModel from '../models/MenuModel'
+import MenuModel, { IMenu } from '../models/MenuModel'
 import shortid from 'shortid'
 import ProductModel from '../models/ProductModel'
 import RestaurantModel from '../models/RestaurantModel'
+import { FilterQuery } from 'mongoose'
 
 export const create: Handler = async (req, res) => {
   const Restaurant = await RestaurantModel.findOne({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
@@ -28,7 +29,9 @@ export const create: Handler = async (req, res) => {
 }
 
 export const getAll: Handler = async (req, res) => {
-  const query = {}
+  const query:FilterQuery<IMenu> = {}
+  if (req.query.q) query.$text = { $search: String(req.query.q) }
+  if (req.user?.role === 'restaurateur') query.restaurant = (await RestaurantModel.findOne({ 'owner._id': req.user._id }).exec())?._id || ''
   const [results, count] = await Promise.all([
     MenuModel.find(query).skip(req.pagination.skip).limit(req.pagination.size).exec(),
     MenuModel.countDocuments(query).exec()

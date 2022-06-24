@@ -20,6 +20,6 @@ const MenuSchema = new Schema<IMenu>({
   products: [rawProductSchema],
   restaurant: { type: String, required: true },
   _id: { type: String, required: true }
-})
+}).index({ name: 'text', description: 'text', 'products.name': 'text', 'products.description': 'text' })
 
 export default model('Menu', MenuSchema)
