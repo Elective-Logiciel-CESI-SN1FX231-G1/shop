@@ -18,6 +18,6 @@ export const rawProductSchema = {
   _id: { type: String, required: true }
 }
 
-const ProductSchema = new Schema<IProduct>(rawProductSchema)
+const ProductSchema = new Schema<IProduct>(rawProductSchema).index({ name: 'text', description: 'text' })
 
 export default model('Product', ProductSchema)

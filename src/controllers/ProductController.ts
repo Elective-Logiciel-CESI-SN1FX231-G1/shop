@@ -2,7 +2,8 @@ import { Handler } from 'express'
 import ProductModel from '../models/ProductModel'
 import MenuModel from '../models/MenuModel'
 import shortid from 'shortid'
-import RestaurantModel from '../models/RestaurantModel'
+import RestaurantModel, { IRestaurant } from '../models/RestaurantModel'
+import { FilterQuery } from 'mongoose'
 
 export const create: Handler = async (req, res) => {
   const ownerRestaurant = await RestaurantModel.findOne({ 'owner._id': req.user?._id }, { projection: { _id: 1 } })
@@ -50,7 +51,8 @@ export const create: Handler = async (req, res) => {
  *     }
  */
 export const getAll: Handler = async (req, res) => {
-  const query = {}
+  const query :FilterQuery<IRestaurant> = {}
+  if (req.query.q) query.$text = { $search: String(req.query.q) }
   const [results, count] = await Promise.all([
     ProductModel.find(query).skip(req.pagination.skip).limit(req.pagination.size).exec(),
     ProductModel.countDocuments(query).exec()
