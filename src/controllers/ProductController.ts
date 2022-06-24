@@ -53,6 +53,8 @@ export const create: Handler = async (req, res) => {
 export const getAll: Handler = async (req, res) => {
   const query :FilterQuery<IRestaurant> = {}
   if (req.query.q) query.$text = { $search: String(req.query.q) }
+  if (req.query.restaurant) query.restaurant = req.query.restaurant
+  if (req.user?.role === 'restaurateur') query.restaurant = (await RestaurantModel.findOne({ 'owner._id': req.user._id }).exec())?._id || ''
   const [results, count] = await Promise.all([
     ProductModel.find(query).skip(req.pagination.skip).limit(req.pagination.size).exec(),
     ProductModel.countDocuments(query).exec()
