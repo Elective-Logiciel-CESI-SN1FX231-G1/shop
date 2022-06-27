@@ -79,7 +79,7 @@ export const remove: Handler = async (req, res) => {
 
   if (ownerRestaurant[0]._id === RestaurantMenu.restaurant) {
     const Menu = await MenuModel.deleteOne({ _id: req.params.id })
-    if (Menu.deletedCount) res.send(Menu)
+    if (Menu.deletedCount) res.sendStatus(204)
   } else return res.status(400).send('You are not the owner of this restaurant')
 }
 
