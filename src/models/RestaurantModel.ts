@@ -7,6 +7,7 @@ export interface IRestaurant {
   description: string,
   address: string,
   image: string,
+  phone: string,
   position:{
     lon:number,
     lat:number
@@ -31,6 +32,7 @@ const RestaurantSchema = new Schema<IRestaurant>({
   },
   name: { type: String, required: true },
   image: { type: String, required: true },
+  phone: { type: String, required: true },
   description: { type: String },
   address: { type: String, required: true },
   position: {
