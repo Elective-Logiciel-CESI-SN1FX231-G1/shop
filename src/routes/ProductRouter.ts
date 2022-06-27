@@ -109,6 +109,44 @@ ProductRouter.get('/', paginate, ProductController.getAll)
  */
 ProductRouter.get('/:id', ProductController.getOne)
 
+/**
+ * @api {post} /shop/api/products/:id Edit a product
+ * @apiName EditOne
+ * @apiGroup Product
+ *
+ * @apiParam {String} id Product unique ID.
+ *
+ * @apiBody {String} [name] Name of the product.
+ * @apiBody {Number} [price] Price of the product.
+ * @apiBody {String} [description] Description of the product.
+ * @apiBody {String} [image] URL image of the product.
+ * @apiBody {String} [restaurant] Restaurant ID of the product.
+ *
+ *@apiExample {json} Request-Example:
+ *    {
+ *      "price": 10.99,
+ *      "description": "Made with tomato, buffalo mozzarella from Campania in fillets, basil and extra virgin olive oil with extra cheese.",
+ *    }
+ *
+ * @apiSuccess {String} name Name of the product.
+ * @apiSuccess {Number} price Price of the product.
+ * @apiSuccess {String} description Description of the product.
+ * @apiSuccess {String} image URL image of the product.
+ * @apiSuccess {String} restaurant Restaurant ID of the product.
+ * @apiSuccess {String} _id Unique ID of the product.
+ *
+ * @apiSuccessExample Success-Response:
+ *    HTTP/1.1 200 OK
+ *    {
+ *      "_id": "2WEKaVNO",
+ *      "name": "Pizza Margherita DOC",
+ *      "price": 12.99,
+ *      "description": "Made with tomato, buffalo mozzarella from Campania in fillets, basil and extra virgin olive oil",
+ *      "image": "shorturl.at/fpuFJ",
+ *      "restaurant": "46Juzcyx"
+ *    }
+ *
+ */
 ProductRouter.patch('/:id', restrictedToRoles('restaurateur'), express.json(), ProductController.modify)
 
 /**
