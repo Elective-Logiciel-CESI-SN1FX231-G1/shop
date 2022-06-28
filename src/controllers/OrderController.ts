@@ -72,7 +72,6 @@ export const create: Handler = async (req, res) => {
   req.body.commissionPrice = 3
   req.body.restaurant = Restaurant
   req.body.client = req.user
-  console.log(formatDate(new Date()))
 
   req.body.deliveringDate = formatDate(new Date())
 
