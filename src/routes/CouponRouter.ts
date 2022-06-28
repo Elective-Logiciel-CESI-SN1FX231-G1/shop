@@ -74,6 +74,38 @@ CouponRouter.get('/', paginate, CouponController.getAll)
 CouponRouter.get('/:id', CouponController.getOne)
 
 /**
+ * @api {get} /shop/api/coupons/users/:id Request Coupon information from User
+ * @apiName GetUserOne
+ * @apiGroup Coupon
+ *
+ * @apiParam {String} id User's unique ID
+ *
+ * @apiSuccess {Object} user Coupon's holder.
+ * @apiSuccess {String} coupon Coupon's activation code.
+ * @apiSuccess {Date} date Coupon's creation date.
+ * @apiSuccess {Boolean} isUsed If the coupon was used or not.
+ * @apiSuccess {String} _id Coupon's unique ID.
+ *
+ * @apiSuccessExample Success-Response:
+ *    HTTP/1.1 200 OK
+ *    {
+ *      "user": {
+ *          "firstname": "Keanu",
+ *          "lastname": "Reeves",
+ *          "email": "keanu.reeves@theking.com",
+ *          "phone": "0707070707",
+ *          "role": "Client"
+ *      },
+ *      "coupon": "PromoCode10",
+ *      "date": "Wed Jan 16 2019 05:30:00 GMT",
+ *      "isUsed": False,
+ *      "_id": "7F1tHGhCS"
+ *    }
+ *
+ */
+CouponRouter.get('/user/:id', CouponController.getUserOne)
+
+/**
  * @api {post} /shop/api/coupons/:id Use the requested Coupon
  * @apiName UseOne
  * @apiGroup Coupon
@@ -103,8 +135,6 @@ CouponRouter.get('/:id', CouponController.getOne)
  *    }
  *
  */
-CouponRouter.get('/user/:id', CouponController.getUserOne)
-
 CouponRouter.post('/:id', express.json(), CouponController.use)
 
 export default CouponRouter
