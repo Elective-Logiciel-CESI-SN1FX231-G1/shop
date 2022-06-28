@@ -33,6 +33,12 @@ export const getOne: Handler = async (req, res) => {
   else res.status(404).send('Coupon Not Found')
 }
 
+export const getUserOne: Handler = async (req, res) => {
+  const Coupon = await CouponModel.find({ 'user._id': req.params.id })
+  if (Coupon) res.send(Coupon)
+  else res.status(404).send('Coupon Not Found')
+}
+
 export const use: Handler = async (req, res) => {
   const ParamCoupon = await CouponModel.findOne({ _id: req.params.id })
 
@@ -79,6 +85,7 @@ export default {
   create,
   getAll,
   getOne,
+  getUserOne,
   use,
   processSponsor
 }

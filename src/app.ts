@@ -11,6 +11,7 @@ import { auth } from './auth'
 const app = express()
 
 app.use(auth)
+app.use('/api', express.static('apidoc'))
 app.use('/api/restaurants', RestaurantRouter)
 app.use('/api/products', ProductRouter)
 app.use('/api/menus', MenuRouter)

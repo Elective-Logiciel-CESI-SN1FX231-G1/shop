@@ -103,6 +103,8 @@ CouponRouter.get('/:id', CouponController.getOne)
  *    }
  *
  */
+CouponRouter.get('/user/:id', CouponController.getUserOne)
+
 CouponRouter.post('/:id', express.json(), CouponController.use)
 
 export default CouponRouter
