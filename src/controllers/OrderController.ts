@@ -5,6 +5,26 @@ import RestaurantModel from '../models/RestaurantModel'
 import CouponModel from '../models/CouponModel'
 import client from '../mqtt'
 
+function padTo2Digits (num: Number) {
+  return num.toString().padStart(2, '0')
+}
+
+function formatDate (date: Date) {
+  return (
+    [
+      date.getFullYear(),
+      padTo2Digits(date.getUTCMonth() + 1),
+      padTo2Digits(date.getUTCDate())
+    ].join('-') +
+    ' ' +
+    [
+      padTo2Digits(date.getUTCHours() + 2),
+      padTo2Digits(date.getUTCMinutes()),
+      padTo2Digits(date.getUTCSeconds())
+    ].join(':')
+  )
+}
+
 export const create: Handler = async (req, res) => {
   let commandPrice = 0
 
@@ -52,6 +72,8 @@ export const create: Handler = async (req, res) => {
   req.body.commissionPrice = 3
   req.body.restaurant = Restaurant
   req.body.client = req.user
+
+  req.body.deliveringDate = formatDate(new Date())
 
   res.status(201).send(req.body)
 
