@@ -53,6 +53,10 @@ ProductRouter.post('/', restrictedToRoles('restaurateur'), express.json(), Produ
  * @apiName GetAll
  * @apiGroup Product
  *
+ * @apiQuery {Number} size=10 Number of elements per page.
+ * @apiQuery {Number} skip=0 Number of elements to skip.
+ * @apiQuery {Number} page=1 The page to get.
+ *
  * @apiSuccess {Number} count Number of products returned.
  * @apiSuccess {Array} results Array of products.
  * @apiSuccess {String} results.name Name of the product.
